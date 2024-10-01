@@ -1,0 +1,10 @@
+# Echidna configuration for the correct vault.
+# Run from the repository root:
+#   echidna test/EchidnaVault.sol --contract EchidnaVault --config echidna.yaml
+# Requires crytic-compile (`pip install crytic-compile`).
+testMode: property
+testLimit: 20000
+seqLen: 20
+timeout: 300
+# Echidna needs the compiled contracts; build first with `forge build`.
+cryticArgs: ["--solc", "0.8.24"]
