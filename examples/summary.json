@@ -1,0 +1,196 @@
+{
+  "seed": "1",
+  "suites": [
+    {
+      "contract": "InvariantVaultTest",
+      "kind": "correct",
+      "seed": "1",
+      "wall_seconds": 7.61,
+      "passed": true,
+      "invariants": {
+        "invariant_conservation": "pass",
+        "invariant_debtAccounting": "pass",
+        "invariant_feeAccounting": "pass",
+        "invariant_permissions": "pass",
+        "invariant_shareAccounting": "pass",
+        "invariant_solvency": "pass",
+        "invariant_supplyBalance": "pass"
+      },
+      "failing_invariants": [],
+      "counterexample_sequences": [],
+      "runs": 200,
+      "calls": 6000
+    },
+    {
+      "contract": "InvariantRoundingTest",
+      "kind": "defect-rounding",
+      "seed": "0x1",
+      "wall_seconds": 11.15,
+      "passed": false,
+      "invariants": {
+        "invariant_shareAccounting": "fail",
+        "invariant_solvency": "fail",
+        "invariant_conservation": "pass",
+        "invariant_debtAccounting": "pass",
+        "invariant_feeAccounting": "pass",
+        "invariant_permissions": "pass",
+        "invariant_supplyBalance": "pass"
+      },
+      "failing_invariants": [
+        "invariant_shareAccounting",
+        "invariant_solvency"
+      ],
+      "counterexample_sequences": [
+        {
+          "original_calls": 21,
+          "shrunk_calls": 3
+        },
+        {
+          "original_calls": 21,
+          "shrunk_calls": 6
+        },
+        {
+          "original_calls": 21,
+          "shrunk_calls": 3
+        },
+        {
+          "original_calls": 21,
+          "shrunk_calls": 6
+        }
+      ],
+      "runs": 200,
+      "calls": 6000
+    },
+    {
+      "contract": "InvariantLiquidationTest",
+      "kind": "defect-liquidation",
+      "seed": "0x1",
+      "wall_seconds": 13.33,
+      "passed": false,
+      "invariants": {
+        "invariant_conservation": "fail",
+        "invariant_debtAccounting": "fail",
+        "invariant_shareAccounting": "fail",
+        "invariant_solvency": "fail",
+        "invariant_feeAccounting": "pass",
+        "invariant_permissions": "pass",
+        "invariant_supplyBalance": "pass"
+      },
+      "failing_invariants": [
+        "invariant_conservation",
+        "invariant_debtAccounting",
+        "invariant_shareAccounting",
+        "invariant_solvency"
+      ],
+      "counterexample_sequences": [
+        {
+          "original_calls": 19,
+          "shrunk_calls": 4
+        },
+        {
+          "original_calls": 19,
+          "shrunk_calls": 4
+        },
+        {
+          "original_calls": 19,
+          "shrunk_calls": 4
+        },
+        {
+          "original_calls": 19,
+          "shrunk_calls": 4
+        },
+        {
+          "original_calls": 19,
+          "shrunk_calls": 4
+        },
+        {
+          "original_calls": 19,
+          "shrunk_calls": 4
+        },
+        {
+          "original_calls": 19,
+          "shrunk_calls": 4
+        },
+        {
+          "original_calls": 19,
+          "shrunk_calls": 4
+        }
+      ],
+      "runs": 200,
+      "calls": 6000
+    },
+    {
+      "contract": "InvariantFeeTest",
+      "kind": "defect-fee",
+      "seed": "0x1",
+      "wall_seconds": 6.25,
+      "passed": false,
+      "invariants": {
+        "invariant_conservation": "fail",
+        "invariant_debtAccounting": "fail",
+        "invariant_feeAccounting": "fail",
+        "invariant_permissions": "pass",
+        "invariant_shareAccounting": "pass",
+        "invariant_solvency": "pass",
+        "invariant_supplyBalance": "pass"
+      },
+      "failing_invariants": [
+        "invariant_conservation",
+        "invariant_debtAccounting",
+        "invariant_feeAccounting"
+      ],
+      "counterexample_sequences": [
+        {
+          "original_calls": 13,
+          "shrunk_calls": 2
+        },
+        {
+          "original_calls": 13,
+          "shrunk_calls": 2
+        },
+        {
+          "original_calls": 13,
+          "shrunk_calls": 2
+        },
+        {
+          "original_calls": 13,
+          "shrunk_calls": 2
+        },
+        {
+          "original_calls": 13,
+          "shrunk_calls": 2
+        },
+        {
+          "original_calls": 13,
+          "shrunk_calls": 2
+        }
+      ],
+      "runs": 200,
+      "calls": 6000
+    },
+    {
+      "contract": "VaultTest",
+      "kind": "unit",
+      "seed": "1",
+      "wall_seconds": 1.14,
+      "passed": true,
+      "invariants": {},
+      "failing_invariants": [],
+      "counterexample_sequences": [],
+      "runs": null,
+      "calls": null
+    },
+    {
+      "contract": "RegressionTest",
+      "kind": "regression",
+      "seed": "1",
+      "wall_seconds": 2.03,
+      "passed": true,
+      "invariants": {},
+      "failing_invariants": [],
+      "counterexample_sequences": [],
+      "runs": null,
+      "calls": null
+    }
+  ]
+}
