@@ -5,7 +5,7 @@
       "contract": "InvariantVaultTest",
       "kind": "correct",
       "seed": "1",
-      "wall_seconds": 7.61,
+      "wall_seconds": 23.19,
       "passed": true,
       "invariants": {
         "invariant_conservation": "pass",
@@ -25,7 +25,7 @@
       "contract": "InvariantRoundingTest",
       "kind": "defect-rounding",
       "seed": "0x1",
-      "wall_seconds": 11.15,
+      "wall_seconds": 35.54,
       "passed": false,
       "invariants": {
         "invariant_shareAccounting": "fail",
@@ -46,16 +46,16 @@
           "shrunk_calls": 3
         },
         {
-          "original_calls": 21,
-          "shrunk_calls": 6
+          "original_calls": 24,
+          "shrunk_calls": 4
         },
         {
           "original_calls": 21,
           "shrunk_calls": 3
         },
         {
-          "original_calls": 21,
-          "shrunk_calls": 6
+          "original_calls": 24,
+          "shrunk_calls": 4
         }
       ],
       "runs": 200,
@@ -65,7 +65,7 @@
       "contract": "InvariantLiquidationTest",
       "kind": "defect-liquidation",
       "seed": "0x1",
-      "wall_seconds": 13.33,
+      "wall_seconds": 45.66,
       "passed": false,
       "invariants": {
         "invariant_conservation": "fail",
@@ -84,35 +84,35 @@
       ],
       "counterexample_sequences": [
         {
-          "original_calls": 19,
+          "original_calls": 28,
           "shrunk_calls": 4
         },
         {
-          "original_calls": 19,
+          "original_calls": 28,
           "shrunk_calls": 4
         },
         {
-          "original_calls": 19,
+          "original_calls": 28,
           "shrunk_calls": 4
         },
         {
-          "original_calls": 19,
+          "original_calls": 28,
           "shrunk_calls": 4
         },
         {
-          "original_calls": 19,
+          "original_calls": 28,
           "shrunk_calls": 4
         },
         {
-          "original_calls": 19,
+          "original_calls": 28,
           "shrunk_calls": 4
         },
         {
-          "original_calls": 19,
+          "original_calls": 28,
           "shrunk_calls": 4
         },
         {
-          "original_calls": 19,
+          "original_calls": 28,
           "shrunk_calls": 4
         }
       ],
@@ -123,7 +123,7 @@
       "contract": "InvariantFeeTest",
       "kind": "defect-fee",
       "seed": "0x1",
-      "wall_seconds": 6.25,
+      "wall_seconds": 24.55,
       "passed": false,
       "invariants": {
         "invariant_conservation": "fail",
@@ -141,27 +141,27 @@
       ],
       "counterexample_sequences": [
         {
-          "original_calls": 13,
+          "original_calls": 11,
           "shrunk_calls": 2
         },
         {
-          "original_calls": 13,
+          "original_calls": 11,
           "shrunk_calls": 2
         },
         {
-          "original_calls": 13,
+          "original_calls": 11,
           "shrunk_calls": 2
         },
         {
-          "original_calls": 13,
+          "original_calls": 11,
           "shrunk_calls": 2
         },
         {
-          "original_calls": 13,
+          "original_calls": 11,
           "shrunk_calls": 2
         },
         {
-          "original_calls": 13,
+          "original_calls": 11,
           "shrunk_calls": 2
         }
       ],
@@ -172,7 +172,7 @@
       "contract": "VaultTest",
       "kind": "unit",
       "seed": "1",
-      "wall_seconds": 1.14,
+      "wall_seconds": 0.59,
       "passed": true,
       "invariants": {},
       "failing_invariants": [],
@@ -184,7 +184,149 @@
       "contract": "RegressionTest",
       "kind": "regression",
       "seed": "1",
-      "wall_seconds": 2.03,
+      "wall_seconds": 0.4,
+      "passed": true,
+      "invariants": {},
+      "failing_invariants": [],
+      "counterexample_sequences": [],
+      "runs": null,
+      "calls": null
+    },
+    {
+      "contract": "InvariantAmmTest",
+      "kind": "correct-amm",
+      "seed": "1",
+      "wall_seconds": 11.17,
+      "passed": true,
+      "invariants": {
+        "invariant_lpAccounting": "pass",
+        "invariant_noDrain": "pass",
+        "invariant_productGrowth": "pass",
+        "invariant_removalProportionality": "pass",
+        "invariant_reserveAccounting": "pass",
+        "invariant_swapFairness": "pass"
+      },
+      "failing_invariants": [],
+      "counterexample_sequences": [],
+      "runs": 200,
+      "calls": 6000
+    },
+    {
+      "contract": "InvariantAmmNoFeeTest",
+      "kind": "defect-amm-nofee",
+      "seed": "0x1",
+      "wall_seconds": 21.26,
+      "passed": false,
+      "invariants": {
+        "invariant_reserveAccounting": "fail",
+        "invariant_swapFairness": "fail",
+        "invariant_lpAccounting": "pass",
+        "invariant_noDrain": "pass",
+        "invariant_productGrowth": "pass",
+        "invariant_removalProportionality": "pass"
+      },
+      "failing_invariants": [
+        "invariant_reserveAccounting",
+        "invariant_swapFairness"
+      ],
+      "counterexample_sequences": [
+        {
+          "original_calls": 4,
+          "shrunk_calls": 2
+        },
+        {
+          "original_calls": 4,
+          "shrunk_calls": 2
+        },
+        {
+          "original_calls": 4,
+          "shrunk_calls": 2
+        },
+        {
+          "original_calls": 4,
+          "shrunk_calls": 2
+        }
+      ],
+      "runs": 200,
+      "calls": 6000
+    },
+    {
+      "contract": "InvariantAmmLiquidityTest",
+      "kind": "defect-amm-liquidity",
+      "seed": "0x1",
+      "wall_seconds": 11.86,
+      "passed": false,
+      "invariants": {
+        "invariant_lpAccounting": "fail",
+        "invariant_noDrain": "pass",
+        "invariant_productGrowth": "pass",
+        "invariant_removalProportionality": "pass",
+        "invariant_reserveAccounting": "pass",
+        "invariant_swapFairness": "pass"
+      },
+      "failing_invariants": [
+        "invariant_lpAccounting"
+      ],
+      "counterexample_sequences": [
+        {
+          "original_calls": 2,
+          "shrunk_calls": 1
+        },
+        {
+          "original_calls": 2,
+          "shrunk_calls": 1
+        }
+      ],
+      "runs": 200,
+      "calls": 6000
+    },
+    {
+      "contract": "InvariantAmmRemovalTest",
+      "kind": "defect-amm-removal",
+      "seed": "0x1",
+      "wall_seconds": 19.0,
+      "passed": false,
+      "invariants": {
+        "invariant_lpAccounting": "fail",
+        "invariant_noDrain": "pass",
+        "invariant_productGrowth": "pass",
+        "invariant_removalProportionality": "pass",
+        "invariant_reserveAccounting": "pass",
+        "invariant_swapFairness": "pass"
+      },
+      "failing_invariants": [
+        "invariant_lpAccounting"
+      ],
+      "counterexample_sequences": [
+        {
+          "original_calls": 7,
+          "shrunk_calls": 2
+        },
+        {
+          "original_calls": 7,
+          "shrunk_calls": 2
+        }
+      ],
+      "runs": 200,
+      "calls": 6000
+    },
+    {
+      "contract": "AmmTest",
+      "kind": "unit-amm",
+      "seed": "1",
+      "wall_seconds": 0.6,
+      "passed": true,
+      "invariants": {},
+      "failing_invariants": [],
+      "counterexample_sequences": [],
+      "runs": null,
+      "calls": null
+    },
+    {
+      "contract": "RegressionAmmTest",
+      "kind": "regression-amm",
+      "seed": "1",
+      "wall_seconds": 0.69,
       "passed": true,
       "invariants": {},
       "failing_invariants": [],

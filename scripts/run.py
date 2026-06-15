@@ -10,11 +10,17 @@ invariants and the counterexample sequence lengths (original and
 shrunk by Foundry's shrinker). It does not invent results: a suite
 that was not run is reported as not run, and a run that fails to
 parse is reported as unknown.
+
+Foundry persists invariant failures under cache/invariant/failures/
+and replays them on the next run instead of running the campaign.
+The runner clears that directory first, so every suite runs the
+full campaign at the configured runs and depth.
 """
 
 import argparse
 import json
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -29,9 +35,20 @@ SUITES = [
     ("InvariantFeeTest", "defect-fee", "test/InvariantDefects.t.sol"),
     ("VaultTest", "unit", "test/Vault.t.sol"),
     ("RegressionTest", "regression", "test/regression/Regression.t.sol"),
+    ("InvariantAmmTest", "correct-amm", "test/InvariantAmm.t.sol"),
+    ("InvariantAmmNoFeeTest", "defect-amm-nofee", "test/InvariantAmmDefects.t.sol"),
+    ("InvariantAmmLiquidityTest", "defect-amm-liquidity", "test/InvariantAmmDefects.t.sol"),
+    ("InvariantAmmRemovalTest", "defect-amm-removal", "test/InvariantAmmDefects.t.sol"),
+    ("AmmTest", "unit-amm", "test/Amm.t.sol"),
+    ("RegressionAmmTest", "regression-amm", "test/regression/RegressionAmm.t.sol"),
 ]
 
 INVARIANT_RE = re.compile(r"\[(PASS|FAIL)[^\]]*\]\s+(invariant_\w+)")
+# Replay form: when a failure was persisted, forge replays it and
+# prints the invariant name on its own line, e.g.
+#   invariant_lpAccounting() (runs: 1, calls: 1, reverts: 0)
+# This line only appears for a failing invariant.
+INVARIANT_REPLAY_RE = re.compile(r"(?m)^\s+(invariant_\w+)\(\) \(runs: \d+, calls: \d+, reverts: \d+\)$")
 SEQUENCE_RE = re.compile(r"\[Sequence\] \(original: (\d+), shrunk: (\d+)\)")
 RUNS_RE = re.compile(r"runs: (\d+), calls: (\d+)")
 SEED_RE = re.compile(r"Fuzz seed: (0x[0-9a-f]+)")
@@ -51,6 +68,8 @@ def run_suite(name, kind, seed):
     invariants = {}
     for status, inv in INVARIANT_RE.findall(output):
         invariants[inv] = status.lower()
+    for inv in INVARIANT_REPLAY_RE.findall(output):
+        invariants.setdefault(inv, "fail")
     sequences = [(int(a), int(b)) for a, b in SEQUENCE_RE.findall(output)]
     runs = RUNS_RE.search(output)
     seed_m = SEED_RE.search(output)
@@ -75,6 +94,10 @@ def main():
     parser.add_argument("--seed", default="1", help="Fuzz seed for invariant suites.")
     parser.add_argument("--output", default="examples/summary.json", help="Summary JSON path.")
     args = parser.parse_args()
+
+    # Drop persisted invariant failures so every suite runs the full
+    # campaign instead of replaying a cached counterexample.
+    shutil.rmtree(ROOT / "cache" / "invariant" / "failures", ignore_errors=True)
 
     results = []
     for name, kind, _path in SUITES:

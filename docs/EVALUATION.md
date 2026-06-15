@@ -1,7 +1,7 @@
 # Evaluation
 
-Measured on the example vault only, with Foundry 1.8.3 and Echidna
-2.4.0, on the local machine. Reproduce with:
+Measured on the example vault and the example AMM, with Foundry
+1.8.3 and Echidna 2.4.0, on the local machine. Reproduce with:
 
 ```bash
 forge test
@@ -11,7 +11,10 @@ echidna test/EchidnaVault.sol --contract EchidnaVault --config echidna.yaml
 
 The canonical run is `examples/summary.json`, produced by
 `scripts/run.py --seed 1`. Invariant campaigns use 200 runs and
-depth 30 (see `foundry.toml`).
+depth 30 (see `foundry.toml`). The runner clears
+`cache/invariant/failures/` first: without that, Foundry replays
+a persisted counterexample instead of running the campaign, and
+the run is recorded as 1 run instead of 200.
 
 ## Foundry invariant suites (fuzz seed 1)
 
@@ -36,12 +39,40 @@ failing templates are the same in every run observed. The
 regression tests in `test/regression/` replay the recorded shrunk
 sequences exactly and pass on the correct vault.
 
+## Foundry invariant suites, AMM (fuzz seed 1)
+
+| Suite | Result | Wall | Runs / calls | Broken templates | Counterexample (original → shrunk) |
+| --- | --- | --- | --- | --- | --- |
+| Correct AMM | pass, 6/6 invariants hold | 11.2 s | 200 / 6000 | — | — |
+| D-A1 no fee | fail | 21.3 s | 200 / 6000 | reserveAccounting, swapFairness | 4 → 2 calls |
+| D-A2 liquidity | fail | 11.9 s | 200 / 6000 | lpAccounting | 2 → 1 call |
+| D-A3 removal | fail | 19.0 s | 200 / 6000 | lpAccounting | 7 → 2 calls |
+
+The shrunk counterexamples are short enough to read:
+
+- **D-A1** (2 calls): add liquidity, swap. The swap pays the
+  fee-free output, so the reserves fall short of the ghost reserves
+  and the paid output no longer matches the fee formula.
+- **D-A2** (1 call): a single add. The first add mints LP 1:1 with
+  token A instead of `sqrt(amountA * amountB)` minus the minimum,
+  so the recorded LP is 1000 wei above the ghost value.
+- **D-A3** (2 calls): add liquidity, remove part of it. The removal
+  pays the full proportional share but burns only half the LP, so
+  the recorded LP supply is larger than the ghost supply.
+
+Wall times vary between runs on the same machine; the failing
+templates and shrunk lengths are the stable figures. The regression
+tests in `test/regression/RegressionAmm.t.sol` replay the recorded
+shrunk sequences exactly and pass on the correct AMM.
+
 ## Other test results
 
 | Suite | Result |
 | --- | --- |
 | Unit tests (`VaultTest`) | 7 passed, 0 failed |
 | Regression tests (`RegressionTest`) | 6 passed, 0 failed |
+| Unit tests (`AmmTest`) | 10 passed, 0 failed |
+| Regression tests (`RegressionAmmTest`) | 6 passed, 0 failed |
 | Correct vault, 5 consecutive random-seed runs | 5 passed, 0 failed |
 
 ## Echidna (second backend, correct vault)
@@ -82,7 +113,9 @@ this evaluation:
 ## What this does and does not show
 
 - The three seeded defects are all caught, and the correct vault
-  holds all seven templates over 6,000 calls per campaign.
+  holds all seven templates over 6,000 calls per campaign. The
+  three seeded AMM defects are all caught as well, and the correct
+  AMM holds all six templates over 6,000 calls per campaign.
 - Discovery of D2 is seed-dependent with random seeds: it was
   found in some random-seed campaigns and not in others. With the
   fixed seed 1 it reproduces on every run observed. A defect that
@@ -93,8 +126,11 @@ this evaluation:
   no sequence in that campaign broke a stated invariant. The
   handler covers four actors and the operations listed in the
   README; it does not model MEV, oracle manipulation beyond the
-  price factor, or cross-contract interactions.
+  price factor, or cross-contract interactions. The AMM handler
+  likewise covers four actors and add, swap and remove only; it
+  does not model MEV, sandwiching, or flash loans.
 - No comparison against other invariant-testing tools was run.
 - Echidna's harness is single-actor, so it exercises fewer
   interactions than the Foundry handler (no multi-actor transfers
-  or liquidations between actors).
+  or liquidations between actors). No Echidna harness exists for
+  the AMM yet.
